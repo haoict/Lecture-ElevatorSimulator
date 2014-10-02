@@ -5,7 +5,7 @@
  */
 
 package models;
-import controllers.MainController;
+import controllers.SimulatorSystem;
 /**
  *
  * @author Hao
@@ -60,12 +60,15 @@ public class FloorButton extends Button {
         }
         return true;
     }
+    
+    @Override
+    public void pressed() {
+        SimulatorSystem.getInstance().getControler().getPassengerInform(this);
+    }
 
     @Override
     public void turnOn() {
         this.illuminated = true;
-        // Sua sau
-        MainController.getInstance().getBuilding().addReqests(floorNum, direction);
     }
     
     @Override

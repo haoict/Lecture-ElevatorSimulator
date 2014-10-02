@@ -4,8 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 
-import controllers.MainController;
-import models.Elevator;
+import controllers.SimulatorSystem;
 import models.Passenger;
 
 public class AnimatedPerson extends AnimatedObject {
@@ -24,9 +23,7 @@ public class AnimatedPerson extends AnimatedObject {
     public Color head_color;
     public Color eye_color;
 
-    @SuppressWarnings("StaticNonFinalUsedInInitialization")
     public static final int PERSON_WIDTH = arm_width * 2 + 2;
-    @SuppressWarnings("StaticNonFinalUsedInInitialization")
     public static final int PERSON_HEIGHT = head_height + body_width + leg_height - 1;
 
     public AnimatedPerson(Passenger person, int x, int y) {
@@ -39,20 +36,20 @@ public class AnimatedPerson extends AnimatedObject {
 
     @Override
     public void updateState() {
-        
+        person.update();
         if (person.isInTheElevator()) {
             x = person.getElevator().getAnimatedElevator().getX() + AnimatedElevator.ELEVATOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * person.getElevator().getPassengerIndex(person));
             y = person.getElevator().getAnimatedElevator().getY() + AnimatedElevator.ELEVATOR_HEIGHT - PERSON_HEIGHT;
         } else {
-//            for (Elevator elevator : MainController.building.getElevators()){
+//            for (Elevator elevator : SimulatorSystem.controler.getElevators()){
 //            if (person.getCurrentFloor() == elevator.getCurrentFloor())
 //                if (person.getWantedFloor() > person.getCurrentFloor() == elevator.isGoingToTop())
 //                    person.setElevator(elevator);
 //             }
             if (person.isArrived()) { // Is arrived
-                x = MyFrame.frame_width - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * MainController.getInstance().getBuilding().getPassengerIndexAtHisFloor(person));
+                x = MyFrame.frame_width - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * SimulatorSystem.getInstance().getPassengerIndexAtHisFloor(person));
             } else { // Is waiting
-                x = FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * MainController.getInstance().getBuilding().getPassengerIndexAtHisFloor(person));
+                x = FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * SimulatorSystem.getInstance().getPassengerIndexAtHisFloor(person));
             }
         }
     }
@@ -64,15 +61,8 @@ public class AnimatedPerson extends AnimatedObject {
         // Head
         g.fillOval(x, y, head_width, head_height);
 
-        // Body
-//        if (person.getSex() == Person.MALE) {
-            g.drawLine(x + (head_width / 2), y + head_height, x + (head_width / 2), y + head_height + body_height);
-//        } else {
-//            int[] xs = new int[]{x + (head_width / 2), x + (head_width / 2) - arm_width, x + (head_width / 2) + arm_width};
-//            int[] ys = new int[]{y + head_height, y + head_height + body_height + 2, y + head_height + body_height + 2};
-//            Polygon p = new Polygon(xs, ys, 3);
-//            g.fillPolygon(p);
-//        }
+        g.drawLine(x + (head_width / 2), y + head_height, x + (head_width / 2), y + head_height + body_height);
+        
         // Arms
         g.drawLine(x + (head_width / 2) - arm_width, y + head_height + shoulder_height, x + (head_width / 2) + arm_width, y + head_height + shoulder_height);
 

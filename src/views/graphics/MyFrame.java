@@ -13,6 +13,7 @@ public class MyFrame extends JFrame {
     private SimulationPanel panel;
 
     public MyFrame(int elevator_count, int floor_count) {
+        int a = FixedFloor.FLOOR_WIDTH;
         frame_width = (elevator_count * AnimatedElevator.ELEVATOR_WIDTH) + (2 * FixedFloor.FLOOR_WIDTH);
         frame_height = (floor_count) * AnimatedElevator.ELEVATOR_HEIGHT;
 //    	System.out.println(frame_width+"x"+frame_height);

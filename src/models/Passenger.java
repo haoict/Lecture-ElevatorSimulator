@@ -1,7 +1,7 @@
 package models;
 
 import views.graphics.SimulationPanel;
-import controllers.MainController;
+import controllers.SimulatorSystem;
 import main.Console;
 
 /**
@@ -10,7 +10,7 @@ import main.Console;
  */
 public class Passenger {
 
-    protected MainController controller;
+    protected SimulatorSystem controller;
 
     // personal counter
     private long beginTime;
@@ -27,12 +27,20 @@ public class Passenger {
      * @param mass
      */
     public Passenger(int current_floor, int wanted_floor, int mass) {
-        this.controller = MainController.getInstance();
-        this.currentFloor = current_floor % this.controller.getBuilding().getFloorCountWithGround();
-        this.wantedFloor = wanted_floor % this.controller.getBuilding().getFloorCountWithGround();
+        this.controller = SimulatorSystem.getInstance();
+        this.currentFloor = current_floor % this.controller.getControler().getFloorCount();
+        this.wantedFloor = wanted_floor % this.controller.getControler().getFloorCount();
         this.elevator = null;
         this.mass = mass;
         resetTime();
+    }
+    
+    public void pressFloorButton() {
+        int direction = getWantedFloor() > getCurrentFloor() ? 1:0;
+        SimulatorSystem.getInstance().getControler().getFloorButtons().get(getCurrentFloor()*2 + direction-1).pressed();
+    }
+    
+    public void pressWantedFloorButton() {
     }
 
     public int getTotalMass() {
@@ -44,6 +52,7 @@ public class Passenger {
     }
 
     public boolean canEnterElevator(Elevator elevator) {
+        if (elevator.getCurrentFloor() != this.getCurrentFloor()) return false;
         // If the elevator says it is on alert weight
 
         if (elevator.isInAlert()) {
@@ -53,11 +62,11 @@ public class Passenger {
             if (elevator.takePassenger(this)) {
                 Console.debug("I get on elevator " + elevator.getIdentifier() + ", I'm going upstairs " + wantedFloor + "! |" + elevator.getPassengerCount() + "|");
                 int direction = this.getWantedFloor() > this.getCurrentFloor() ? 1 : 0;
-                MainController.getInstance().getBuilding().getFloorButtons().get(this.getCurrentFloor() * 2 + direction - 1).turnOff();
+                SimulatorSystem.getInstance().getControler().getFloorButtons().get(this.getCurrentFloor() * 2 + direction - 1).turnOff();
             } else {
                 Console.debug("I'm too heavy to ride in elevator " + elevator.getIdentifier() + ".");
                 //int direction = this.getWantedFloor() > this.getCurrentFloor() ? 1 : 0;
-                //MainController.getInstance().getBuilding().getFloorButtons().get(this.getCurrentFloor() * 2 + direction - 1).turnOn();
+                //MainController.getInstance().getControler().getFloorButtons().get(this.getCurrentFloor() * 2 + direction - 1).turnOn();
             }
         }
 
@@ -107,5 +116,15 @@ public class Passenger {
 
     public final void resetTime() {
         beginTime = System.currentTimeMillis();
+    }
+
+    public void update() {
+        if (this.isInTheElevator()) return;
+        SimulatorSystem ss = SimulatorSystem.getInstance();
+        for (Elevator el : ss.getInstance().getControler().getElevators()) {
+            if (canEnterElevator(el)) {
+                this.setElevator(el);
+            }
+        }
     }
 }

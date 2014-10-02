@@ -8,13 +8,13 @@ import models.*;
 
 public class SimulatorFactory {
 
-    public Building getBuilding(int floor_count, ArrayList<Elevator> elevator_list, LinkedList<Passenger> passengers_list, ArrayList<FloorButton> floorButtons_list) {
-        //		Console.debug("Creating a building with "+floorCount+" floors and "+elevatorList.size()+" lifts.");
-        return new Building(floor_count, elevator_list, passengers_list, floorButtons_list);
+    public Controller getControler(int floor_count, ArrayList<Elevator> elevator_list, LinkedList<Passenger> passengers_list, ArrayList<FloorButton> floorButtons_list) {
+        //		Console.debug("Creating a controler with "+floorCount+" floors and "+elevatorList.size()+" lifts.");
+        return new Controller(floor_count, elevator_list, passengers_list, floorButtons_list);
     }
 
-    public Building getBuilding(int floor_count) {
-        return new Building(floor_count);
+    public Controller getControler(int floor_count) {
+        return new Controller(floor_count);
     }
 
     public Passenger getRandomPerson(int max_floor) {

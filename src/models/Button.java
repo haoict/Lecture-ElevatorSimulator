@@ -30,4 +30,5 @@ public abstract class Button {
     }
     protected abstract void turnOff();
     protected abstract void turnOn();
+    protected abstract void pressed();
 }

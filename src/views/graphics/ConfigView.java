@@ -1,6 +1,6 @@
 package views.graphics;
 
-import controllers.MainController;
+import controllers.SimulatorSystem;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -212,7 +212,7 @@ class StartSimulationObserver implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         window.setVisible(false);
         try {
-            MainController.getInstance().startSimulation(window.get_floor_count(),
+            SimulatorSystem.getInstance().startSimulation(window.get_floor_count(),
                     window.get_elevator_count(), window.get_person_per_elevator_count(), window.get_person_count());
         } catch (InstantiationException ex) {
             Logger.getLogger(StartSimulationObserver.class.getName()).log(Level.SEVERE, null, ex);

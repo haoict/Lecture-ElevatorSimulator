@@ -2,13 +2,11 @@ package views.graphics;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import controllers.MainController;
-import static java.lang.Math.max;
 
 public class FixedFloor extends FixedObject  {
-
-    public final static int FLOOR_WIDTH = max(
-         (int) ((MainController.getInstance().getBuilding().getPassengers().size() / MainController.getInstance().getBuilding().getFloorCountWithGround()) * (AnimatedPerson.PERSON_WIDTH * 1.7)), 180);
+    public final static int FLOOR_WIDTH = 180;
+//    public final static int FLOOR_WIDTH = max(
+//         (int) ((SimulatorSystem.getInstance().getPassengers().size() / SimulatorSystem.getInstance().getControler().getFloorCount()) * (AnimatedPerson.PERSON_WIDTH * 1.7)), 180);
     private final int id;
 
     public FixedFloor(int x, int y, int id) {

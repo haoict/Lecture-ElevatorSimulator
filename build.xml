@@ -26,8 +26,8 @@
       -post-compile-test:        called after javac compilation of JUnit tests
       -pre-compile-test-single:  called before javac compilation of single JUnit test
       -post-compile-test-single: called after javac compilation of single JUunit test
-      -pre-jar:                  called before JAR building
-      -post-jar:                 called after JAR building
+      -pre-jar:                  called before JAR controler
+      -post-jar:                 called after JAR controler
       -post-clean:               called after cleaning build products
 
     (Targets beginning with '-' are not intended to be called on their own.)
@@ -51,7 +51,7 @@
       -init-macrodef-junit:     defines macro for junit execution
       -init-macrodef-debug:     defines macro for class debugging
       -init-macrodef-java:      defines macro for class execution
-      -do-jar:                  JAR building
+      -do-jar:                  JAR controler
       run:                      execution of project 
       -javadoc-build:           Javadoc generation
       test-report:              JUnit report generation

@@ -24,4 +24,9 @@ public class ElevatorButton extends Button {
     public void turnOff() {
         
     }
+
+    @Override
+    protected void pressed() {
+        
+    }
 }

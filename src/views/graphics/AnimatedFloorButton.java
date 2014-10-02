@@ -43,14 +43,14 @@ public class AnimatedFloorButton extends AnimatedObject {
         if (fbutton.isDirection())
         {
             int[] xs = new int[]{x + (head_width / 2), x + (head_width / 2) - arm_width, x + (head_width / 2) + arm_width};
-            int[] ys = new int[]{y + head_height + body_height + 12, y + head_height + body_height + 2, y + head_height + body_height + 2};
+            int[] ys = new int[]{y + head_height, y + head_height + body_height + 2, y + head_height + body_height + 2};
             Polygon p = new Polygon(xs, ys, 3);
             g.fillPolygon(p);
         }
         else
         {
             int[] xs = new int[]{x + (head_width / 2), x + (head_width / 2) - arm_width, x + (head_width / 2) + arm_width};
-            int[] ys = new int[]{y + head_height, y + head_height + body_height + 2, y + head_height + body_height + 2};
+            int[] ys = new int[]{y + head_height + body_height + 12, y + head_height + body_height + 2, y + head_height + body_height + 2};
             Polygon p = new Polygon(xs, ys, 3);
             g.fillPolygon(p);
         }

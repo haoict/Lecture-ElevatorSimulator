@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
 import models.Elevator;
-import controllers.MainController;
+import controllers.SimulatorSystem;
 
 public class SimulationPanel extends JPanel implements Runnable {
 
@@ -53,7 +53,7 @@ public class SimulationPanel extends JPanel implements Runnable {
             } catch (InterruptedException ex) {
                 Logger.getLogger(SimulationPanel.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if (MainController.getInstance().getBuilding().allPassengersAreArrived()) {
+            if (SimulatorSystem.getInstance().allPassengersAreArrived()) {
                 //inPause = true;
             }
         }
@@ -104,14 +104,14 @@ public class SimulationPanel extends JPanel implements Runnable {
 
     public void displayWaitingTime() {
         long sum_waiting_times = 0, sum_trip_times = 0;
-        for (Elevator elevator : MainController.getInstance().getBuilding().getElevators()) {
+        for (Elevator elevator : SimulatorSystem.getInstance().getControler().getElevators()) {
             System.out.println("Average waiting time (elevator " + elevator.getIdentifier() + ") : " + elevator.getWaitingTime().averageWaitingTime());
             System.out.println("Average travel time (elevator " + elevator.getIdentifier() + ") : " + elevator.getWaitingTime().averageTripTime());
             sum_waiting_times += elevator.getWaitingTime().averageWaitingTime();
             sum_trip_times += elevator.getWaitingTime().averageTripTime();
         }
-        System.out.println("Average overall waiting: " + Long.toString((sum_waiting_times / MainController.getInstance().getBuilding().getElevatorCount())));
-        System.out.println("Average time of global travel : " + Long.toString((sum_trip_times / MainController.getInstance().getBuilding().getElevatorCount())));
+        System.out.println("Average overall waiting: " + Long.toString((sum_waiting_times / SimulatorSystem.getInstance().getControler().getElevatorCount())));
+        System.out.println("Average time of global travel : " + Long.toString((sum_trip_times / SimulatorSystem.getInstance().getControler().getElevatorCount())));
     }
 
     @SuppressWarnings("ResultOfObjectAllocationIgnored")

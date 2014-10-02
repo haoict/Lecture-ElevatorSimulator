@@ -14,8 +14,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import controllers.MainController;
-import static controllers.MainController.building;
+import controllers.SimulatorSystem;
+import static controllers.SimulatorSystem.frame;
 import models.Passenger;
 
 /**
@@ -71,22 +71,24 @@ public class UserControlView extends JFrame {
         
         int mass = 45 + (rand.nextInt(75)); // Entre 45 et 120 kg
         try {
-            if (Integer.parseInt(ltpWanted.getText()) > MainController.getInstance().getBuilding().getFloorCount() ||
+            if (Integer.parseInt(ltpWanted.getText()) > SimulatorSystem.getInstance().getControler().getFloorCount() ||
                 Integer.parseInt(ltpWanted.getText()) < 0 ||
-                Integer.parseInt(ltpCurrent.getText()) > MainController.getInstance().getBuilding().getFloorCount() ||
+                Integer.parseInt(ltpCurrent.getText()) > SimulatorSystem.getInstance().getControler().getFloorCount() ||
                 Integer.parseInt(ltpCurrent.getText()) < 0)
             {
-                System.out.printf("Current floor and wanted floor must be between 0 and %d\n", MainController.getInstance().getBuilding().getFloorCount());
+                System.out.printf("Current floor and wanted floor must be between 0 and %d\n", SimulatorSystem.getInstance().getControler().getFloorCount());
                 return;
             }
             
             Passenger passenger = new Passenger(Integer.parseInt(ltpWanted.getText()), Integer.parseInt(ltpCurrent.getText()), mass);
-            MainController.getInstance().getFrame().addAnimatedObject(new AnimatedPerson((Passenger) passenger, FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * building.getPassengerIndexAtHisFloor(passenger)), MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * passenger.getCurrentFloor()) - AnimatedPerson.PERSON_HEIGHT));
-            MainController.getInstance().getBuilding().addPassengers(passenger);
+            passenger.pressFloorButton();
+            
+            SimulatorSystem ss = SimulatorSystem.getInstance();
+            
+            ss.getInstance().addPassengers(passenger);
 
-            int direction = passenger.getWantedFloor() > passenger.getCurrentFloor() ? 1:0;
-
-            MainController.getInstance().getBuilding().getFloorButtons().get(passenger.getCurrentFloor()*2 + direction-1).turnOn();
+            //int direction = passenger.getWantedFloor() > passenger.getCurrentFloor() ? 1:0;
+            //MainController.getInstance().getControler().getFloorButtons().get(passenger.getCurrentFloor()*2 + direction-1).turnOn();
         }
         catch (NumberFormatException e) {
             System.out.println("Current floor and wanted floor must be a number");

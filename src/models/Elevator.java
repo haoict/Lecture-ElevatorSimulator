@@ -3,23 +3,21 @@ package models;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import main.Console;
-import controllers.MainController;
+import controllers.SimulatorSystem;
 import java.util.List;
 import statistics.Times;
-//import strategies.ElevatorStrategy;
 import views.graphics.AnimatedElevator;
 
 /**
  *
- * @author x_nem
- * @author remy
+ * @author haonv
  */
 public class Elevator {
 
     private static final int TO_TOP = 1;
-    private static final int TO_BOTTOM = -1;    // Pointer to his controller
-    private MainController controller;
-    private Building building;
+    private static final int TO_BOTTOM = -1;    // Pointer to his simulatorSystem
+    private SimulatorSystem simulatorSystem;
+    private Controller controler;
     private Times waitingTime;
     private List<Request> requests;
 
@@ -53,8 +51,7 @@ public class Elevator {
     private int maxPersons = 7;
 
     /**
-     * Poids au dela duquel l'ascenseur refuse de bouger, il est physiquement
-     * bloqu�.
+     * Weight above which the elevator does not move, it is physically blocked
      */
     private int maxWeight;
 
@@ -93,7 +90,7 @@ public class Elevator {
     private int targetFloor;
 
     /**
-     * This array HAS length equal to the number of floor of the building's
+     * This array HAS length equal to the number of floor of the controler's
      * elevator Each index Represents a floor (ie: index 0 Represents the
      * ground, and so ...) If a passenger call the elevator from the floor 3,
      * the index value at the 3 increments.
@@ -115,8 +112,8 @@ public class Elevator {
      * @Param strategy Strategy Elevator
      */
     private void constructor(int max_weight, int alert_weight) {
-        this.controller = MainController.getInstance();
-        this.building = controller.getBuilding();
+        this.simulatorSystem = SimulatorSystem.getInstance();
+        this.controler = simulatorSystem.getControler();
         this.maxWeight = max_weight;
         this.alertWeight = alert_weight;
         this.currentFloor = 0;
@@ -131,18 +128,18 @@ public class Elevator {
     // All is done here
     public void acts() {
     //    int direction = this.goingToTop ? 1 : 0;
-        // MainController.getInstance().getBuilding().getFloorButtons().get(this.getCurrentFloor() * 2 + direction - 1).turnOff();
+        // SimulatorSystem.getInstance().getControler().getFloorButtons().get(this.getCurrentFloor() * 2 + direction - 1).turnOff();
         // strategy.acts();
-        
+
         //-------------------------------------------Dung sua o day
-      //  Request servingRequest = new Request(this.currentFloor,this.goingToTop);
+        //  Request servingRequest = new Request(this.currentFloor,this.goingToTop);
         for (Request request : this.requests)
             if (request.startFloor == this.currentFloor ){
                 this.setMoving(false);
                 requests.remove(request);
-                int direction = this.goingToTop ? 0 : 1;
                 this.goingToTop = request.isDirection();
-                MainController.getInstance().getBuilding().getFloorButtons().get(this.getCurrentFloor()*2 + direction-1).turnOff();
+                SimulatorSystem.getInstance().getControler().startRequest(request);
+                //SimulatorSystem.getInstance().getControler().getFloorButtons()
                 return;
             }
                 
@@ -224,7 +221,7 @@ public class Elevator {
      * @return
      */
     public boolean atTop() {
-        return currentFloor >= controller.getBuilding().getFloorCount();
+        return currentFloor >= simulatorSystem.getControler().getFloorCount();
     }
 
     /**
@@ -248,11 +245,11 @@ public class Elevator {
     }
 
         //// public boolean noCallAtAll() {
-    ////		for (int i = 0; i < building.getFloorCount(); i++) {
-    ////			if(building.getAskedFloors().get(i) > 0) return false;
+    ////		for (int i = 0; i < controler.getFloorCount(); i++) {
+    ////			if(controler.getAskedFloors().get(i) > 0) return false;
     ////		}
     ////		return true;
-    //		return building.allPassengersAreArrived();
+    //		return controler.allPassengersAreArrived();
     //	}
     /**
      * Function that returns a boolean whether the elevator was not called in
@@ -262,8 +259,8 @@ public class Elevator {
      */
     public boolean noCallOnTheWay() {
         if (goingToTop) {
-            for (int i = currentFloor; i <= building.getFloorCountWithGround(); i++) {
-                if (building.getWaitingPersonsCountAtFloor(i) > 0) {
+            for (int i = currentFloor; i <= simulatorSystem.getControler().getFloorCount(); i++) {
+                if (simulatorSystem.getWaitingPersonsCountAtFloor(i) > 0) {
                     return false;
                 }
                 for (Passenger p : passengers) {
@@ -275,7 +272,7 @@ public class Elevator {
             return true;
         } else {
             for (int i = currentFloor; i >= 0; i--) {
-                if (building.getWaitingPersonsCountAtFloor(i) > 0) {
+                if (simulatorSystem.getWaitingPersonsCountAtFloor(i) > 0) {
                     return false;
                 }
                 for (Passenger p : passengers) {
@@ -355,8 +352,8 @@ public class Elevator {
         return currentFloor;
     }
 
-    public Building getBuilding() {
-        return building;
+    public Controller getcontroler() {
+        return controler;
     }
 
     public void setToNextFloor() {
