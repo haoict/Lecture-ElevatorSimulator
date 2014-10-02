@@ -2,40 +2,67 @@ package models;
 
 import views.graphics.SimulationPanel;
 import controllers.MainController;
+import main.Console;
 
 /**
  *
  * @author x_nem
  */
-public abstract class Passenger {
+public class Passenger {
 
     protected MainController controller;
 
     // personal counter
-    protected long beginTime;
-    protected Elevator elevator;
-    protected int currentFloor;
-    protected int wantedFloor;
+    private long beginTime;
+    private Elevator elevator;
+    private int currentFloor;
+    private final int wantedFloor;
+    private final int mass;
 
     /**
      * Constructor Passenger with two runs in parameter
      *
      * @param current_floor the floor or the passenger is currently
      * @param wanted_floor upstairs where he wants to go
+     * @param mass
      */
-    public Passenger(int current_floor, int wanted_floor) {
+    public Passenger(int current_floor, int wanted_floor, int mass) {
         this.controller = MainController.getInstance();
         this.currentFloor = current_floor % this.controller.getBuilding().getFloorCountWithGround();
         this.wantedFloor = wanted_floor % this.controller.getBuilding().getFloorCountWithGround();
         this.elevator = null;
+        this.mass = mass;
         resetTime();
     }
 
-    public abstract int getTotalMass();
+    public int getTotalMass() {
+        return mass;
+    }
 
-    public abstract int getPersonCount();
+    public int getPersonCount() {
+        return 1;
+    }
 
-    public abstract boolean canEnterElevator(Elevator elevator);
+    public boolean canEnterElevator(Elevator elevator) {
+        // If the elevator says it is on alert weight
+
+        if (elevator.isInAlert()) {
+            Console.debug("The elevator " + elevator.getIdentifier() + " is alert, I do not ride...");
+        } // The asenseur alert is not
+        else {
+            if (elevator.takePassenger(this)) {
+                Console.debug("I get on elevator " + elevator.getIdentifier() + ", I'm going upstairs " + wantedFloor + "! |" + elevator.getPassengerCount() + "|");
+                int direction = this.getWantedFloor() > this.getCurrentFloor() ? 1 : 0;
+                MainController.getInstance().getBuilding().getFloorButtons().get(this.getCurrentFloor() * 2 + direction - 1).turnOff();
+            } else {
+                Console.debug("I'm too heavy to ride in elevator " + elevator.getIdentifier() + ".");
+                //int direction = this.getWantedFloor() > this.getCurrentFloor() ? 1 : 0;
+                //MainController.getInstance().getBuilding().getFloorButtons().get(this.getCurrentFloor() * 2 + direction - 1).turnOn();
+            }
+        }
+
+        return isInTheElevator();
+    }
 
     public Elevator getElevator() {
         return elevator;
@@ -81,23 +108,4 @@ public abstract class Passenger {
     public final void resetTime() {
         beginTime = System.currentTimeMillis();
     }
-
-    /**
-     * 1 : ok, 2 : a bit angry, 3 : very angry
-     *
-     * @return
-     */
-    public int getMood() {
-        if (isArrived()) {
-            return 1;
-        }
-        if (getTime() > 180) {
-            return 3;
-        } else if (getTime() > 60) {
-            return 2;
-        } else {
-            return 1;
-        }
-    }
-
 }

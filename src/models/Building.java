@@ -2,6 +2,9 @@ package models;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
+import main.Console;
 
 /**
  *
@@ -14,7 +17,10 @@ public class Building {
     // Passenger List of the building in order of arrival
     private LinkedList<Passenger> passengers = null;
     private ArrayList<FloorButton> floorButtons = null;
-
+    private ArrayList<Request> requests = null;
+    public void addReqests(Request request){
+        
+    }
     public ArrayList<FloorButton> getFloorButtons() {
         return floorButtons;
     }
@@ -59,6 +65,7 @@ public class Building {
         this.elevators = elevators_list;
         this.passengers = passengers_list;
         this.floorButtons = floorButtons_list;
+        this.requests = new ArrayList<Request>();
     }
 
     public ArrayList<Elevator> getElevators() {
@@ -313,6 +320,32 @@ public class Building {
             }
         }
         return numberWaiting;
+    }
+
+    void addReqests(int floorNum, boolean direction) {
+        this.requests.add(new Request(floorNum, direction));
+        this.processNewRequest();
+    }
+    
+    void processNewRequest(){
+        Request lastRequest =  this.requests.get(this.requests.size()-1);
+        for (Elevator elevator : elevators){
+            //List<Request> eleRequests = elevator.getRequests();
+            if (elevator.getCurrentFloor() < lastRequest.getStartFloor())
+                if (elevator.isGoingToTop()){
+                    elevator.addRequests(lastRequest);
+                    return;
+                }
+             if (elevator.getCurrentFloor() > lastRequest.getStartFloor())
+                if (!elevator.isGoingToTop()){
+                    elevator.addRequests(lastRequest);
+                    return;
+                }
+        }
+        Random rand = new Random();
+       // Console.debug(elevators.size() +  "  fdd\n");
+        elevators.get(rand.nextInt(elevators.size()-1)).addRequests(lastRequest);
+            
     }
 
 }

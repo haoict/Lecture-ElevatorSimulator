@@ -5,24 +5,24 @@ import java.awt.Graphics;
 import models.Elevator;
 
 /**
- * Class AnimatedElevator dessinées the elevator
+ * Class AnimatedElevator 
  *
- * @author x_nem
+ * @author Dzung
  */
 public class AnimatedElevator extends AnimatedObject {
 
-    public static int ELEVATOR_WIDTH = 100;
+    public static int ELEVATOR_WIDTH = 250;
     public static int ELEVATOR_HEIGHT = 50;
     public static final int BETWEEN_2_FLOORS_DURATION = 10;
     private final Elevator elevator;
     private int animationStep;
 
     /**
-     * Constructeur
+     * Constructor
      *
      * @param e Elevator
-     * @param x placement en x
-     * @param y placement en y
+     * @param x placement on x
+     * @param y placement on y
      */
     public AnimatedElevator(Elevator e, int x, int y) {
         super(x, y);

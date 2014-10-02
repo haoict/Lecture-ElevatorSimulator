@@ -5,7 +5,7 @@
  */
 
 package models;
-
+import controllers.MainController;
 /**
  *
  * @author Hao
@@ -64,6 +64,8 @@ public class FloorButton extends Button {
     @Override
     public void turnOn() {
         this.illuminated = true;
+        // Sua sau
+        MainController.getInstance().getBuilding().addReqests(floorNum, direction);
     }
     
     @Override

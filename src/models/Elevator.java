@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import main.Console;
 import controllers.MainController;
+import java.util.List;
 import statistics.Times;
-import strategies.ElevatorStrategy;
+//import strategies.ElevatorStrategy;
 import views.graphics.AnimatedElevator;
 
 /**
@@ -19,8 +20,20 @@ public class Elevator {
     private static final int TO_BOTTOM = -1;    // Pointer to his controller
     private MainController controller;
     private Building building;
-    private ElevatorStrategy strategy;
     private Times waitingTime;
+    private List<Request> requests;
+
+    public List<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
+    }
+    public void addRequests(Request request){
+        this.requests.add(request);
+    }
+    private final boolean must_leave_now = false;
 
     // C'est mieux si l'identifier est unique.
     private int identifier;
@@ -89,9 +102,9 @@ public class Elevator {
     private boolean moving;
     private AnimatedElevator animatedElevator;
 
-    public Elevator(int max_persons, ElevatorStrategy strategy) {
+    public Elevator(int max_persons) {
         this.maxPersons = max_persons;
-        constructor(max_persons * 80, (max_persons * 80) - 100, strategy);
+        constructor(max_persons, max_persons - 100);
     }
 
     /**
@@ -101,16 +114,15 @@ public class Elevator {
      * @Param alert_weight mass alert the Elevator
      * @Param strategy Strategy Elevator
      */
-    private void constructor(int max_weight, int alert_weight, ElevatorStrategy strategy) {
+    private void constructor(int max_weight, int alert_weight) {
         this.controller = MainController.getInstance();
         this.building = controller.getBuilding();
         this.maxWeight = max_weight;
         this.alertWeight = alert_weight;
-        this.strategy = strategy;
-        this.strategy.setElevator(this);
         this.currentFloor = 0;
         this.goingToTop = true;
         this.passengers = new LinkedList<Passenger>();
+        this.requests   = new ArrayList<Request>();
         this.moving = false;
         this.waitingTime = new Times();
         this.targetFloor = Integer.MAX_VALUE;
@@ -119,8 +131,28 @@ public class Elevator {
     // All is done here
     public void acts() {
     //    int direction = this.goingToTop ? 1 : 0;
-       // MainController.getInstance().getBuilding().getFloorButtons().get(this.getCurrentFloor() * 2 + direction - 1).turnOff();
-        strategy.acts();
+        // MainController.getInstance().getBuilding().getFloorButtons().get(this.getCurrentFloor() * 2 + direction - 1).turnOff();
+        // strategy.acts();
+        
+        //-------------------------------------------Dung sua o day
+      //  Request servingRequest = new Request(this.currentFloor,this.goingToTop);
+        for (Request request : this.requests)
+            if (request.startFloor == this.currentFloor ){
+                this.setMoving(false);
+                requests.remove(request);
+                int direction = this.goingToTop ? 0 : 1;
+                this.goingToTop = request.isDirection();
+                MainController.getInstance().getBuilding().getFloorButtons().get(this.getCurrentFloor()*2 + direction-1).turnOff();
+                return;
+            }
+                
+        if (this.requests.isEmpty()) {
+            this.setMoving(false);
+            return;
+        }
+        this.targetFloor = requests.get(0).startFloor;
+        this.goingToTop = this.currentFloor < this.targetFloor;
+        this.setMoving(true);
     }
 
     /**
@@ -152,7 +184,7 @@ public class Elevator {
             passenger.setElevator(this);
             waitingTime.addWaitingTime(passenger.getTime());
             passenger.resetTime();
-            strategy.takePassenger(passenger);
+            //     strategy.takePassenger(passenger);
             Console.debug("Un passager monte. " + passenger.getCurrentFloor() + " -> " + passenger.getWantedFloor());
             return true;
         }
@@ -173,7 +205,7 @@ public class Elevator {
             removeOfCurrentWeight(passenger.getTotalMass());
             passenger.setElevator(null);
             waitingTime.addTripTime(passenger.getTime());
-            strategy.releasePassenger(passenger);
+            //     strategy.releasePassenger(passenger);
         }
     }
 
@@ -216,18 +248,18 @@ public class Elevator {
     }
 
         //// public boolean noCallAtAll() {
-        ////		for (int i = 0; i < building.getFloorCount(); i++) {
-        ////			if(building.getAskedFloors().get(i) > 0) return false;
-        ////		}
-        ////		return true;
-        //		return building.allPassengersAreArrived();
-        //	}
-        /**
-         * Function that returns a boolean whether the elevator was not called
-         * in the same direction
-         *
-         * @return
-         */
+    ////		for (int i = 0; i < building.getFloorCount(); i++) {
+    ////			if(building.getAskedFloors().get(i) > 0) return false;
+    ////		}
+    ////		return true;
+    //		return building.allPassengersAreArrived();
+    //	}
+    /**
+     * Function that returns a boolean whether the elevator was not called in
+     * the same direction
+     *
+     * @return
+     */
     public boolean noCallOnTheWay() {
         if (goingToTop) {
             for (int i = currentFloor; i <= building.getFloorCountWithGround(); i++) {
@@ -350,10 +382,6 @@ public class Elevator {
         currentWeight -= mass;
     }
 
-    public ElevatorStrategy getStrategy() {
-        return strategy;
-    }
-
     public boolean isMoving() {
         return moving;
     }
@@ -419,7 +447,7 @@ public class Elevator {
         setStoppedTime(0);
         // The elevator moves
         setMoving(true);
-        strategy.leaveThisFloor();
+        //   strategy.leaveThisFloor();
     }
 
     /**

@@ -2,8 +2,6 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-
-import strategies.ElevatorStrategy;
 import views.graphics.AnimatedElevator;
 import views.graphics.AnimatedPerson;
 import views.graphics.FixedFloor;
@@ -13,7 +11,6 @@ import java.util.Random;
 import main.Console;
 import models.*;
 import views.graphics.AnimatedFloorButton;
-import views.graphics.ElevatorButtonsFrame;
 import views.graphics.UserControlView;
 
 /**
@@ -57,7 +54,8 @@ public class MainController {
         return INSTANCE;
     }
 
-    public void startSimulation(int floor_count, int elevator_count, int person_per_elevator, int person_count, ElevatorStrategy elevator_strategy) throws InstantiationException, IllegalAccessException {
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
+    public void startSimulation(int floor_count, int elevator_count, int person_per_elevator, int person_count) throws InstantiationException, IllegalAccessException {
 
         Console.info("Launching a game with " + floor_count + " floors, " + elevator_count
                 + " lifts, " + person_per_elevator + " max people on lift, " + person_count + ".");
@@ -71,8 +69,7 @@ public class MainController {
         ArrayList<Elevator> elevators = new ArrayList<Elevator>(elevator_count);
         Elevator elevator;
         for (int i = 1; i <= elevator_count; i++) {
-            // Avec plugin
-            elevator = sf.getElevator((ElevatorStrategy) elevator_strategy.getClass().newInstance(), person_per_elevator);
+            elevator = sf.getElevator(person_per_elevator);
             elevator.setIdentifier(i);
             //Placement des Elevators
             Random rand = new Random();
@@ -84,8 +81,8 @@ public class MainController {
 
         // Graphics!
         frame = new MyFrame(elevator_count, building.getFloorCountWithGround());
-        ElevatorButtonsFrame bframe = new ElevatorButtonsFrame(elevator_count, building.getFloorCountWithGround());
-        UserControlView userControlView = new UserControlView();
+        //ElevatorButtonsFrame bframe = new ElevatorButtonsFrame(elevator_count, building.getFloorCountWithGround());
+        new UserControlView();
 
         ArrayList<FloorButton> fBs = new ArrayList<FloorButton>();
         for (int i = 0; i < building.getFloorCountWithGround(); i++) {
@@ -116,7 +113,7 @@ public class MainController {
         LinkedList<Passenger> passengers = new LinkedList<Passenger>();
         int j = 0;
         while (j < person_count) {
-            passengers.add(sf.getPerson(building.getFloorCountWithGround()));
+            passengers.add(sf.getRandomPerson(building.getFloorCountWithGround()));
             j++;
         }
         // Add passengers to the building
@@ -125,9 +122,9 @@ public class MainController {
         Passenger passenger;
         for (int i = 0; i < building.getPassengers().size(); i++) {
             passenger = building.getPassengers().get(i);
-            if (passenger instanceof Person) {
-                frame.addAnimatedObject(new AnimatedPerson((Person) passenger, FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * building.getPassengerIndexAtHisFloor(passenger)), MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * passenger.getCurrentFloor()) - AnimatedPerson.PERSON_HEIGHT));
-            }
+            frame.addAnimatedObject(new AnimatedPerson((Passenger) passenger, 
+                    FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * building.getPassengerIndexAtHisFloor(passenger)), 
+                    MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * passenger.getCurrentFloor()) - AnimatedPerson.PERSON_HEIGHT));
         }
     }
 

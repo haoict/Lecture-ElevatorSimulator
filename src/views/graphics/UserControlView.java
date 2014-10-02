@@ -9,16 +9,14 @@ package views.graphics;
 import static java.awt.Component.CENTER_ALIGNMENT;
 import java.util.Random;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
-import models.Person;
 import controllers.MainController;
 import static controllers.MainController.building;
-import javax.swing.JOptionPane;
+import models.Passenger;
 
 /**
  *
@@ -35,7 +33,7 @@ public class UserControlView extends JFrame {
     
     public UserControlView() {
         this.setLocationByPlatform(true);
-        this.setSize(200, 200);
+        this.setSize(200, 150);
         this.setTitle("User control");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         
@@ -54,7 +52,7 @@ public class UserControlView extends JFrame {
         ltpCurrent = new JTextPane();
         jpanel_principal.add(ltpCurrent);
         
-        JButton jbutton_start_simulation = new JButton("Start simulation", new ImageIcon("src/10.png"));
+        JButton jbutton_start_simulation = new JButton("Add passenger");
                 jbutton_start_simulation.setAlignmentX(CENTER_ALIGNMENT);
                 jbutton_start_simulation.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -70,15 +68,28 @@ public class UserControlView extends JFrame {
     
     private void jButtonAddPersionActionPerformed(java.awt.event.ActionEvent evt) {         
         Random rand = new Random();
-        int sex = rand.nextInt(2);
+        
         int mass = 45 + (rand.nextInt(75)); // Entre 45 et 120 kg
-        Person passenger = new Person(Integer.parseInt(ltpWanted.getText()), Integer.parseInt(ltpCurrent.getText()), sex, mass);
- 
-        MainController.getInstance().getFrame().addAnimatedObject(new AnimatedPerson((Person) passenger, FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * building.getPassengerIndexAtHisFloor(passenger)), MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * passenger.getCurrentFloor()) - AnimatedPerson.PERSON_HEIGHT));
-        MainController.getInstance().getBuilding().addPassengers(passenger);
-        
-        int direction = passenger.getWantedFloor() > passenger.getCurrentFloor() ? 1:0;
-        
-        MainController.getInstance().getBuilding().getFloorButtons().get(passenger.getCurrentFloor()*2 + direction-1).turnOn();
+        try {
+            if (Integer.parseInt(ltpWanted.getText()) > MainController.getInstance().getBuilding().getFloorCount() ||
+                Integer.parseInt(ltpWanted.getText()) < 0 ||
+                Integer.parseInt(ltpCurrent.getText()) > MainController.getInstance().getBuilding().getFloorCount() ||
+                Integer.parseInt(ltpCurrent.getText()) < 0)
+            {
+                System.out.printf("Current floor and wanted floor must be between 0 and %d\n", MainController.getInstance().getBuilding().getFloorCount());
+                return;
+            }
+            
+            Passenger passenger = new Passenger(Integer.parseInt(ltpWanted.getText()), Integer.parseInt(ltpCurrent.getText()), mass);
+            MainController.getInstance().getFrame().addAnimatedObject(new AnimatedPerson((Passenger) passenger, FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * building.getPassengerIndexAtHisFloor(passenger)), MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * passenger.getCurrentFloor()) - AnimatedPerson.PERSON_HEIGHT));
+            MainController.getInstance().getBuilding().addPassengers(passenger);
+
+            int direction = passenger.getWantedFloor() > passenger.getCurrentFloor() ? 1:0;
+
+            MainController.getInstance().getBuilding().getFloorButtons().get(passenger.getCurrentFloor()*2 + direction-1).turnOn();
+        }
+        catch (NumberFormatException e) {
+            System.out.println("Current floor and wanted floor must be a number");
+        }    
     }          
 }
