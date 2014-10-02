@@ -113,7 +113,7 @@ public class Elevator {
      */
     private void constructor(int max_weight, int alert_weight) {
         this.simulatorSystem = SimulatorSystem.getInstance();
-        this.controler = simulatorSystem.getControler();
+        this.controler = simulatorSystem.getController();
         this.maxWeight = max_weight;
         this.alertWeight = alert_weight;
         this.currentFloor = 0;
@@ -138,7 +138,7 @@ public class Elevator {
                 this.setMoving(false);
                 requests.remove(request);
                 this.goingToTop = request.isDirection();
-                SimulatorSystem.getInstance().getControler().startRequest(request);
+                SimulatorSystem.getInstance().getController().startRequest(request);
                 //SimulatorSystem.getInstance().getControler().getFloorButtons()
                 return;
             }
@@ -221,7 +221,7 @@ public class Elevator {
      * @return
      */
     public boolean atTop() {
-        return currentFloor >= simulatorSystem.getControler().getFloorCount();
+        return currentFloor >= simulatorSystem.getController().getFloorCount();
     }
 
     /**
@@ -259,7 +259,7 @@ public class Elevator {
      */
     public boolean noCallOnTheWay() {
         if (goingToTop) {
-            for (int i = currentFloor; i <= simulatorSystem.getControler().getFloorCount(); i++) {
+            for (int i = currentFloor; i <= simulatorSystem.getController().getFloorCount(); i++) {
                 if (simulatorSystem.getWaitingPersonsCountAtFloor(i) > 0) {
                     return false;
                 }

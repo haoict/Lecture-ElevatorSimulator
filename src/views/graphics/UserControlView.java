@@ -71,12 +71,12 @@ public class UserControlView extends JFrame {
         
         int mass = 45 + (rand.nextInt(75)); // Entre 45 et 120 kg
         try {
-            if (Integer.parseInt(ltpWanted.getText()) > SimulatorSystem.getInstance().getControler().getFloorCount() ||
+            if (Integer.parseInt(ltpWanted.getText()) > SimulatorSystem.getInstance().getController().getFloorCount() ||
                 Integer.parseInt(ltpWanted.getText()) < 0 ||
-                Integer.parseInt(ltpCurrent.getText()) > SimulatorSystem.getInstance().getControler().getFloorCount() ||
+                Integer.parseInt(ltpCurrent.getText()) > SimulatorSystem.getInstance().getController().getFloorCount() ||
                 Integer.parseInt(ltpCurrent.getText()) < 0)
             {
-                System.out.printf("Current floor and wanted floor must be between 0 and %d\n", SimulatorSystem.getInstance().getControler().getFloorCount());
+                System.out.printf("Current floor and wanted floor must be between 0 and %d\n", SimulatorSystem.getInstance().getController().getFloorCount());
                 return;
             }
             

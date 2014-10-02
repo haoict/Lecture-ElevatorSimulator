@@ -11,11 +11,12 @@ import java.util.Random;
 import main.Console;
 import models.*;
 import views.graphics.AnimatedFloorButton;
+import views.graphics.ElevatorButtonsFrame;
 import views.graphics.UserControlView;
 
 /**
- * SimulatorSystem is built on the model of the Singleton design pattern In fact,
- there can be only one instance of this controller at a time.
+ * SimulatorSystem is built on the model of the Singleton design pattern In
+ * fact, there can be only one instance of this controller at a time.
  *
  * @ Author Remy
  *
@@ -28,12 +29,13 @@ public class SimulatorSystem {
     // Passenger List of the controler in order of arrival
     private LinkedList<Passenger> passengers = null;
     public static MyFrame frame = null;
+    public ElevatorButtonsFrame elevatorButtonsFrame;
 
     public static MyFrame getFrame() {
         return frame;
     }
 
-    public Controller getControler() {
+    public Controller getController() {
         return controler;
     }
 
@@ -83,6 +85,8 @@ public class SimulatorSystem {
 
         // Graphics!
         frame = new MyFrame(elevator_count, controler.getFloorCount());
+        elevatorButtonsFrame = new ElevatorButtonsFrame(controler);
+
         //ElevatorButtonsFrame bframe = new ElevatorButtonsFrame(elevator_count, controler.getFloorCount());
         new UserControlView();
 
@@ -101,9 +105,37 @@ public class SimulatorSystem {
                 fBs.add(fb);
                 frame.addAnimatedObject(new AnimatedFloorButton(0, MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * (i + 1)) - 10, fb));
             }
-            controler.setFloorButtons(fBs);
             frame.addFixedObject(new FixedFloor(FixedFloor.FLOOR_WIDTH + (elevator_count * AnimatedElevator.ELEVATOR_WIDTH), MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * (i + 1)), i));
         }
+        controler.setFloorButtons(fBs);
+
+        ArrayList<ElevatorButton> eBs = new ArrayList<ElevatorButton>();
+        for (int i = 0; i < controler.getElevatorCount(); i++) {
+            //frame.addFixedObject(new FixedFloor(0, MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * (i + 1)), i));
+            
+            for (int j = 0; j < controler.getFloorCount(); j++) {
+                ElevatorButton ebn = new ElevatorButton(controler.getElevators().get(i), j, -1);
+                eBs.add(ebn);
+                
+//                if (i != 0) {
+//                    FloorButton fb = new FloorButton(i, false);
+//                    fBs.add(fb);
+//                    frame.addAnimatedObject(new AnimatedFloorButton(0, MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * (i + 1)), fb));
+//                }
+//
+//                if (i != controler.getFloorCount() - 1) {
+//                    FloorButton fb = new FloorButton(i, true);
+//                    fBs.add(fb);
+//                    frame.addAnimatedObject(new AnimatedFloorButton(0, MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * (i + 1)) - 10, fb));
+//                }
+//                controler.setFloorButtons(fBs);
+//                frame.addFixedObject(new FixedFloor(FixedFloor.FLOOR_WIDTH + (elevator_count * AnimatedElevator.ELEVATOR_WIDTH), MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * (i + 1)), i));
+            }
+            eBs.add(new ElevatorButton(controler.getElevators().get(i), -1, 0));
+            eBs.add(new ElevatorButton(controler.getElevators().get(i), -1, 1));
+            eBs.add(new ElevatorButton(controler.getElevators().get(i), -1, 2));
+        }
+        controler.setElevatorButtons(eBs);
 
         for (int i = 0; i < elevators.size(); i++) {
             AnimatedElevator e = new AnimatedElevator(elevators.get(i), FixedFloor.FLOOR_WIDTH + (AnimatedElevator.ELEVATOR_WIDTH * i), MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * (elevators.get(i).getCurrentFloor() + 1)));
@@ -122,13 +154,20 @@ public class SimulatorSystem {
         Passenger passenger;
         for (int i = 0; i < getPassengers().size(); i++) {
             passenger = getPassengers().get(i);
-            frame.addAnimatedObject(new AnimatedPerson((Passenger) passenger, 
-                    FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * getPassengerIndexAtHisFloor(passenger)), 
+            frame.addAnimatedObject(new AnimatedPerson((Passenger) passenger,
+                    FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * getPassengerIndexAtHisFloor(passenger)),
                     MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * passenger.getCurrentFloor()) - AnimatedPerson.PERSON_HEIGHT));
         }
     }
 
-    
+    public ElevatorButtonsFrame getElevatorButtonsFrame() {
+        return elevatorButtonsFrame;
+    }
+
+    public void setElevatorButtonsFrame(ElevatorButtonsFrame elevatorButtonsFrame) {
+        this.elevatorButtonsFrame = elevatorButtonsFrame;
+    }
+
     // Passengers control
     public LinkedList<Passenger> getPassengers() {
         return passengers;
@@ -140,12 +179,12 @@ public class SimulatorSystem {
 
     public void addPassengers(Passenger passenger) {
         this.passengers.add(passenger);
-        frame.addAnimatedObject(new AnimatedPerson((Passenger) passenger, 
-                    FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * getPassengerIndexAtHisFloor(passenger)), 
-                    MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * passenger.getCurrentFloor()) - AnimatedPerson.PERSON_HEIGHT));
+        frame.addAnimatedObject(new AnimatedPerson((Passenger) passenger,
+                FixedFloor.FLOOR_WIDTH - AnimatedPerson.PERSON_WIDTH - (AnimatedPerson.PERSON_WIDTH * getPassengerIndexAtHisFloor(passenger)),
+                MyFrame.frame_height - (AnimatedElevator.ELEVATOR_HEIGHT * passenger.getCurrentFloor()) - AnimatedPerson.PERSON_HEIGHT));
     }
-    
-     /**
+
+    /**
      * Returns a boolean as to whether all the passengers arrived at destination
      *
      * @return Returns true if the passengers are all arrived Returns false if
@@ -153,7 +192,9 @@ public class SimulatorSystem {
      *
      */
     public boolean allPassengersAreArrived() {
-        if (passengers == null) return false;
+        if (passengers == null) {
+            return false;
+        }
         for (Passenger passenger : passengers) {
             if (!passenger.isArrived()) {
                 return false;
@@ -177,12 +218,13 @@ public class SimulatorSystem {
         }
         return ret_list;
     }
-    
-     /**
+
+    /**
      * Returns the ith passengers waiting upstairs floor
      *
      * @param floor
-     * @param i Index passenger in the LinkedList of passengers waiting upstairs floor
+     * @param i Index passenger in the LinkedList of passengers waiting upstairs
+     * floor
      * @return
      */
     public Passenger getWaitingPassengerAtFloorWithIndex(int floor, int i) {
@@ -199,7 +241,8 @@ public class SimulatorSystem {
      * going_to_top
      *
      * @param floor
-     * @param i Index passenger in the LinkedList of passengers waiting upstairs floor
+     * @param i Index passenger in the LinkedList of passengers waiting upstairs
+     * floor
      * @param going_to_top
      * @return
      */
@@ -278,7 +321,8 @@ public class SimulatorSystem {
     }
 
     /**
-     * Returns a list Chainé Passenger Connaire for passengers arriving on the floor
+     * Returns a list Chainé Passenger Connaire for passengers arriving on the
+     * floor
      *
      * @param floor
      * @return
@@ -340,5 +384,4 @@ public class SimulatorSystem {
         return numberWaiting;
     }
 
-    
 }

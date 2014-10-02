@@ -104,14 +104,14 @@ public class SimulationPanel extends JPanel implements Runnable {
 
     public void displayWaitingTime() {
         long sum_waiting_times = 0, sum_trip_times = 0;
-        for (Elevator elevator : SimulatorSystem.getInstance().getControler().getElevators()) {
+        for (Elevator elevator : SimulatorSystem.getInstance().getController().getElevators()) {
             System.out.println("Average waiting time (elevator " + elevator.getIdentifier() + ") : " + elevator.getWaitingTime().averageWaitingTime());
             System.out.println("Average travel time (elevator " + elevator.getIdentifier() + ") : " + elevator.getWaitingTime().averageTripTime());
             sum_waiting_times += elevator.getWaitingTime().averageWaitingTime();
             sum_trip_times += elevator.getWaitingTime().averageTripTime();
         }
-        System.out.println("Average overall waiting: " + Long.toString((sum_waiting_times / SimulatorSystem.getInstance().getControler().getElevatorCount())));
-        System.out.println("Average time of global travel : " + Long.toString((sum_trip_times / SimulatorSystem.getInstance().getControler().getElevatorCount())));
+        System.out.println("Average overall waiting: " + Long.toString((sum_waiting_times / SimulatorSystem.getInstance().getController().getElevatorCount())));
+        System.out.println("Average time of global travel : " + Long.toString((sum_trip_times / SimulatorSystem.getInstance().getController().getElevatorCount())));
     }
 
     @SuppressWarnings("ResultOfObjectAllocationIgnored")

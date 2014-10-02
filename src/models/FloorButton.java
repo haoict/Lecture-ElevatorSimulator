@@ -63,7 +63,7 @@ public class FloorButton extends Button {
     
     @Override
     public void pressed() {
-        SimulatorSystem.getInstance().getControler().getPassengerInform(this);
+        SimulatorSystem.getInstance().getController().getPassengerInform(this);
     }
 
     @Override

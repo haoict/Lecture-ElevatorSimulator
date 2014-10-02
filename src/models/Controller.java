@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 import main.Console;
+import views.graphics.ElevatorButtonsFrame;
 /**
  *
  * @author x_nem
@@ -14,6 +15,24 @@ public class Controller {
     private ArrayList<Elevator> elevators = null;
 
     private ArrayList<FloorButton> floorButtons = null;
+    private ArrayList<ElevatorButton> elevatorButtons = null;
+
+    public ArrayList<ElevatorButton> getElevatorButtons() {
+        return elevatorButtons;
+    }
+
+    public void setElevatorButtons(ArrayList<ElevatorButton> elevatorButtons) {
+        this.elevatorButtons = elevatorButtons;
+    }
+
+    public ArrayList<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(ArrayList<Request> requests) {
+        this.requests = requests;
+    }
+    
     private ArrayList<Request> requests = null;
     public void addReqests(Request request){
         
@@ -77,6 +96,10 @@ public class Controller {
         if (b instanceof FloorButton) {
             b.turnOn();
             addReqests(((FloorButton)b).getFloorNum(), ((FloorButton)b).isDirection());
+        }
+        else {
+            b.turnOn();
+            //int numberI
         }
     }
     /**
