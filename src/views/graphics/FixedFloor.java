@@ -23,5 +23,4 @@ public class FixedFloor extends FixedObject  {
             g.drawString("Floor " + (id+1), x + FLOOR_WIDTH / 4, y + AnimatedElevator.ELEVATOR_HEIGHT / 3);
         }
     }
-
 }
