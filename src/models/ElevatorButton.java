@@ -7,6 +7,7 @@
 package models;
 
 import controllers.SimulatorSystem;
+import logger.LoggingCenter;
 
 /**
  *
@@ -57,21 +58,33 @@ public class ElevatorButton extends Button {
     @Override
     public void turnOn() {
         // TODO: ngu
-        int i = 0;
+        int i;
         for (i = 0; i < SimulatorSystem.getInstance().getController().getElevatorCount(); i++) {
-            if (SimulatorSystem.getInstance().getController().getElevators().get(i).equals(getBelongElevator()))
+            if (SimulatorSystem.getInstance().getController().getElevators().get(i).equals(getBelongElevator())) {
+                LoggingCenter.getInstance().logger.info("Button " + this + " (number " + (numFloor+1) + " in elevator " + belongElevator + "): light ON.");
                 break;
+            }
         }
-        SimulatorSystem.getInstance().getElevatorButtonsFrame().getElevatorButtonsPanels().get(i).turnOn(Integer.toString(numFloor));
+        SimulatorSystem.getInstance().getElevatorButtonsFrame().getElevatorButtonsPanels().get(i).turnOn(Integer.toString(numFloor+1));
     }
     
     @Override
     public void turnOff() {
         this.illuminated = false;
+        // TODO: ngu
+        int i;
+        for (i = 0; i < SimulatorSystem.getInstance().getController().getElevatorCount(); i++) {
+            if (SimulatorSystem.getInstance().getController().getElevators().get(i).equals(getBelongElevator())) {
+                LoggingCenter.getInstance().logger.info("Button " + this + " (number " + (numFloor+1) + " in elevator " + belongElevator + "): light OFF.");
+                break;
+            } 
+        }
+        SimulatorSystem.getInstance().getElevatorButtonsFrame().getElevatorButtonsPanels().get(i).turnOff(Integer.toString(numFloor+1));
     }
 
     @Override
     protected void pressed() {
+        LoggingCenter.getInstance().logger.info("Button " + this + " (number " + (numFloor+1) + " in elevator " + belongElevator + "): is pressed.");
         SimulatorSystem.getInstance().getController().getPassengerInform(this);
     }
 }

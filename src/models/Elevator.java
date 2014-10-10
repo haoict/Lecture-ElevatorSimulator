@@ -20,7 +20,16 @@ public class Elevator {
     private Controller controler;
     private Times waitingTime;
     private List<Request> requests;
+    private List<Integer> mustOpenAt;
 
+    public List<Integer> getMustOpenAt() {
+        return mustOpenAt;
+    }
+
+    public void setMustOpenAt(List<Integer> mustOpenAt) {
+        this.mustOpenAt = mustOpenAt;
+    }
+    
     public List<Request> getRequests() {
         return requests;
     }
@@ -120,6 +129,7 @@ public class Elevator {
         this.goingToTop = true;
         this.passengers = new LinkedList<Passenger>();
         this.requests   = new ArrayList<Request>();
+        this.mustOpenAt = new ArrayList<Integer>();
         this.moving = false;
         this.waitingTime = new Times();
         this.targetFloor = Integer.MAX_VALUE;
@@ -132,24 +142,46 @@ public class Elevator {
         // strategy.acts();
 
         //-------------------------------------------Dung sua o day
-        //  Request servingRequest = new Request(this.currentFloor,this.goingToTop);
-        for (Request request : this.requests)
-            if (request.startFloor == this.currentFloor ){
-                this.setMoving(false);
-                requests.remove(request);
-                this.goingToTop = request.isDirection();
-                SimulatorSystem.getInstance().getController().startRequest(request);
-                //SimulatorSystem.getInstance().getControler().getFloorButtons()
-                return;
+        //  Request servingRequest = new Request(this.currentFloor,this.goingToTop);        
+        Console.debug(this.requests.size() + " " + this.mustOpenAt.size() + " " + this.identifier  + "  ***\n");
+        this.setMoving(true);
+        Console.debug(this.mustOpenAt.size() + " begin\n");
+        for (int i = 0; i < mustOpenAt.size(); i++){            
+            //Console.debug(i.toString() + "\n");
+            if (mustOpenAt.get(i) == this.getCurrentFloor()) {
+                // Tắt ở đây
+                controler.turnOffElevatorButton(this, Integer.toString(currentFloor));
+                this.mustOpenAt.remove(i);
+                i--;
             }
-                
+        }
+        if (!this.mustOpenAt.isEmpty())
+            return;               
         if (this.requests.isEmpty()) {
             this.setMoving(false);
+            Console.debug("Elevator num " + this.identifier  + "  ***\n");
             return;
-        }
+        }               
+        if (requests.get(0).startFloor == this.currentFloor ){
+                //this.setMoving(false);       
+                Console.debug(this.goingToTop + " " + requests.get(0).isDirection() + " *\n");
+                this.goingToTop = requests.get(0).isDirection();                                
+                SimulatorSystem.getInstance().getController().startRequest(requests.get(0));                
+                requests.remove(0);                                              
+                return;
+                //SimulatorSystem.getInstance().getControler().getFloorButtons()                
+            }
         this.targetFloor = requests.get(0).startFloor;
         this.goingToTop = this.currentFloor < this.targetFloor;
         this.setMoving(true);
+        /*
+        for (Request request : requests) {        
+            Console.debug(request.startFloor + " " + this.currentFloor +  " ***\n");
+            
+        }
+        
+        
+        */
     }
 
     /**
@@ -164,7 +196,7 @@ public class Elevator {
     }
 
     /**
-     * Synchronized function that returns a booléean taking a passenger if the
+     * Synchronized function that returns a boolean taking a passenger if the
      * elevator allows returning True if the passenger is back False if the
      * passenger has not been returned
      *
@@ -180,9 +212,7 @@ public class Elevator {
             addToCurrentWeight(passenger.getTotalMass());
             passenger.setElevator(this);
             waitingTime.addWaitingTime(passenger.getTime());
-            passenger.resetTime();
-            //     strategy.takePassenger(passenger);
-            Console.debug("Un passager monte. " + passenger.getCurrentFloor() + " -> " + passenger.getWantedFloor());
+            passenger.resetTime();                        
             return true;
         }
     }
@@ -465,7 +495,9 @@ public class Elevator {
     public int getTargetFloor() {
         return targetFloor;
     }
-
+    public void addIRequest(int destFloor){
+        this.mustOpenAt.add(Integer.valueOf(destFloor));
+    }
     /**
      * Sets the stage to which the lift Automatically updates the direction of
      * movement depending on the floor covered

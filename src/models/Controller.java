@@ -1,16 +1,14 @@
 package models;
 
+import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Random;
-import main.Console;
-import views.graphics.ElevatorButtonsFrame;
+import logger.LoggingCenter;
 /**
  *
  * @author x_nem
  */
 public class Controller {
-
     // List lifts the controler
     private ArrayList<Elevator> elevators = null;
 
@@ -97,11 +95,33 @@ public class Controller {
             b.turnOn();
             addReqests(((FloorButton)b).getFloorNum(), ((FloorButton)b).isDirection());
         }
-        else {
-            b.turnOn();
-            //int numberI
+        else {          
+            Elevator belongEle = ((ElevatorButton)b).getBelongElevator();
+            int nextFloor = ((ElevatorButton)b).getNumFloor();
+            boolean goUp  = belongEle.isGoingToTop();
+            if ((nextFloor > belongEle.getCurrentFloor()) && goUp){
+                LoggingCenter.getInstance().logger.info("Controller " +  this + ": got an passenger's inform by button " + b);
+                belongEle.addIRequest(nextFloor);
+                b.turnOn();
+                return;
+            }
+            if ((nextFloor < belongEle.getCurrentFloor()) && !goUp){
+                LoggingCenter.getInstance().logger.info("Controller " +  this + ": got an passenger's inform by button " + b);
+                belongEle.addIRequest(nextFloor);
+                b.turnOn();
+                return;
+            }
         }
     }
+    
+    public void turnOffElevatorButton(Elevator el, String btnName) {
+        for (ElevatorButton eb : elevatorButtons) {
+            if (eb.belongElevator == el && Integer.toString(eb.getNumFloor()).equals(btnName)) {
+                eb.turnOff();
+            }
+        }
+    }
+    
     /**
      * Returns the number of floors (excluding DRC)
      *
@@ -140,12 +160,11 @@ public class Controller {
         return null;
     }
 
-
-
-
-
-
     void addReqests(int floorNum, boolean direction) {
+        Request newRequest = new Request(floorNum, direction);
+        for (Request request: requests)
+            if (request.equals(newRequest))
+                return;
         this.requests.add(new Request(floorNum, direction));
         this.processNewRequest();
     }
@@ -165,10 +184,17 @@ public class Controller {
                     return;
                 }
         }
-        Random rand = new Random();
+        int best = 10000;        
+        int numEle = 0;
+        for (int i = 0; i < elevators.size(); i++)
+            if (elevators.get(i).getMustOpenAt().isEmpty())
+            if (abs(elevators.get(i).getCurrentFloor()-lastRequest.startFloor) < best){
+                best = abs(elevators.get(i).getCurrentFloor()-lastRequest.startFloor);
+                numEle = i;
+            }
+        elevators.get(numEle).addRequests(lastRequest);
        // Console.debug(elevators.size() +  "  fdd\n");
-        elevators.get(rand.nextInt(elevators.size()-1)).addRequests(lastRequest);
-            
+        //elevators.get(rand.nextInt(elevators.size()-1)).addRequests(lastRequest);            
     }
 
     void startRequest(Request request) {

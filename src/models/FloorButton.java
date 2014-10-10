@@ -3,14 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package models;
+
 import controllers.SimulatorSystem;
+import logger.LoggingCenter;
+
 /**
  *
  * @author Hao
  */
 public class FloorButton extends Button {
+
     int floorNum;
     boolean direction;
 
@@ -29,6 +32,7 @@ public class FloorButton extends Button {
     public void setDirection(boolean direction) {
         this.direction = direction;
     }
+
     public FloorButton() {
     }
 
@@ -36,7 +40,7 @@ public class FloorButton extends Button {
         this.floorNum = floorNum;
         this.direction = direction;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -60,19 +64,22 @@ public class FloorButton extends Button {
         }
         return true;
     }
-    
+
     @Override
     public void pressed() {
+        LoggingCenter.getInstance().logger.info("Button " + this + " (" + (direction == true ? "UP" : "DOWN") + " at floor " + (floorNum + 1) + "): is pressed.");
         SimulatorSystem.getInstance().getController().getPassengerInform(this);
     }
 
     @Override
     public void turnOn() {
         this.illuminated = true;
+        LoggingCenter.getInstance().logger.info("Button " + this + " (" + (direction == true ? "UP" : "DOWN") + " at floor " + (floorNum + 1) + "): light ON.");
     }
-    
+
     @Override
     public void turnOff() {
         this.illuminated = false;
+        LoggingCenter.getInstance().logger.info("Button " + this + " (" + (direction == true ? "UP" : "DOWN") + " at floor " + (floorNum + 1) + "): light OFF");
     }
 }

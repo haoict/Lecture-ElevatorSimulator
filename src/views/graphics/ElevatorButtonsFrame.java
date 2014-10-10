@@ -30,7 +30,7 @@ public class ElevatorButtonsFrame extends JFrame {
         this.elevatorButtonsPanels = new ArrayList<ElevatorButtonsPanel>();
         this.elevators = new ArrayList<Elevator>();
         this.elevators = buiding.getElevators();
-        //this.setLayout(null);
+        this.setTitle("[ICTK56]BailamICT03 : Elevator buttons View");
         this.frame_height = ((buiding.getFloorCount()+1)/2)*35 + 65*3 + 35;
         setVisible(true);
         for(int i = 0; i < this.elevators.size(); i++){

@@ -1,0 +1,26 @@
+Oct 04, 2014 3:48:46 PM controllers.SimulatorSystem startSimulation
+INFO: Launching simulator with 10 floors, 2 elevators, 1350 max weight on elevator, 0.
+Oct 04, 2014 3:48:48 PM models.Passenger <init>
+INFO: New models.Passenger@58648a34: current floor: 1, wanted floor: 5, weight: 95.
+Oct 04, 2014 3:48:48 PM models.FloorButton pressed
+INFO: Button models.FloorButton@7 (UP at floor 1): is pressed.
+Oct 04, 2014 3:48:48 PM models.FloorButton turnOn
+INFO: Button models.FloorButton@7 (UP at floor 1): light ON.
+Oct 04, 2014 3:48:48 PM models.Passenger pressFloorButton
+INFO: models.Passenger@58648a34 press button UP at floor 1
+Oct 04, 2014 3:48:54 PM models.FloorButton turnOff
+INFO: Button models.FloorButton@7 (UP at floor 1): light OFF
+Oct 04, 2014 3:48:54 PM models.Passenger update
+INFO: models.Passenger@58648a34 entered elevator models.Elevator@55bbdbbd
+Oct 04, 2014 3:48:54 PM models.ElevatorButton pressed
+INFO: Button models.ElevatorButton@20578144 (number 5 in elevator models.Elevator@55bbdbbd): is pressed.
+Oct 04, 2014 3:48:54 PM models.Controller getPassengerInform
+INFO: Controller models.Controller@50e7a7f2: got an passenger's inform by button models.ElevatorButton@20578144
+Oct 04, 2014 3:48:54 PM models.ElevatorButton turnOn
+INFO: Button models.ElevatorButton@20578144 (number 5 in elevator models.Elevator@55bbdbbd): light ON.
+Oct 04, 2014 3:48:54 PM models.Passenger pressElevatorButton
+INFO: models.Passenger@58648a34 press button 5 in elevator models.ElevatorButton@20578144
+Oct 04, 2014 3:48:58 PM models.ElevatorButton turnOff
+INFO: Button models.ElevatorButton@20578144 (number 5 in elevator models.Elevator@55bbdbbd): light OFF.
+Oct 04, 2014 3:48:58 PM models.Passenger update
+INFO: models.Passenger@58648a34 moved out elevator models.Elevator@55bbdbbd. DONE!

@@ -2,6 +2,7 @@ package views.graphics;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import main.Console;
 import models.Elevator;
 
 /**
@@ -39,7 +40,7 @@ public class AnimatedElevator extends AnimatedObject {
      */
     public void updateState() {
         // Animation is coming to a floor, we warn the elevator
-        // We reset the elevator animationStep if want to leave
+        // We reset the elevator animationStep if want to leave        
         if (animationStep == BETWEEN_2_FLOORS_DURATION) {
             if (elevator.getMoving()) {
                 // The elevator moves still think he is coming,

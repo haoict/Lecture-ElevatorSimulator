@@ -1,5 +1,6 @@
 package controllers;
 
+import logger.LoggingCenter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import views.graphics.AnimatedElevator;
@@ -22,7 +23,6 @@ import views.graphics.UserControlView;
  *
  */
 public class SimulatorSystem {
-
     // The access point a all models (the controler has direct access to the elevators and passengers)
     private static SimulatorSystem INSTANCE = null;
     public static Controller controler = null;
@@ -59,11 +59,14 @@ public class SimulatorSystem {
     }
 
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
-    public void startSimulation(int floor_count, int elevator_count, int person_per_elevator, int person_count) throws InstantiationException, IllegalAccessException {
+    public void startSimulation(int floor_count, int elevator_count, int max_weight_per_elevator, int person_count) throws InstantiationException, IllegalAccessException {
 
-        Console.info("Launching a game with " + floor_count + " floors, " + elevator_count
-                + " lifts, " + person_per_elevator + " max people on lift, " + person_count + ".");
+        Console.info("Launching simulator with " + floor_count + " floors, " + elevator_count
+                + " elevators, " + max_weight_per_elevator + " max weight on elevator, " + person_count + ".");
 
+        LoggingCenter.getInstance().logger.info("Launching simulator with " + floor_count + " floors, " + elevator_count
+                + " elevators, " + max_weight_per_elevator + " max weight on elevator, " + person_count + ".");
+                
         SimulatorFactory sf = new SimulatorFactory();
 
         // Constructs the controlers.
@@ -73,7 +76,7 @@ public class SimulatorSystem {
         ArrayList<Elevator> elevators = new ArrayList<Elevator>(elevator_count);
         Elevator elevator;
         for (int i = 1; i <= elevator_count; i++) {
-            elevator = sf.getElevator(person_per_elevator);
+            elevator = sf.getElevator(max_weight_per_elevator);
             elevator.setIdentifier(i);
             //Placement des Elevators
             Random rand = new Random();

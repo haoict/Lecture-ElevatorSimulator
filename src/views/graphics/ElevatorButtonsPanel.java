@@ -71,15 +71,14 @@ public class ElevatorButtonsPanel extends JPanel implements ActionListener{
     }
 
     public void actionPerformed(ActionEvent e) {
-        String cmd = e.getActionCommand();
-        System.out.println("Button pressed!");
-        for(int i = 1; i <= this.numFloor; i++){
-            if(cmd.equals(Integer.toString(i))){
-                this.getButtons().get(i-1).setBackground(Color.red);
-                //sent message to elevator controler
-            }
-            
-        }
+//        String cmd = e.getActionCommand();
+//        System.out.println("Button pressed!");
+//        for(int i = 1; i <= this.numFloor; i++){
+//            if(cmd.equals(Integer.toString(i))){
+//                this.getButtons().get(i-1).setBackground(Color.red);
+//            }
+//            
+//        }
     }
     
     public void turnOff(String nameButton){

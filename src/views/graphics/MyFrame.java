@@ -18,6 +18,7 @@ public class MyFrame extends JFrame {
         frame_height = (floor_count) * AnimatedElevator.ELEVATOR_HEIGHT;
 //    	System.out.println(frame_width+"x"+frame_height);
         setSize(frame_width, frame_height);
+        this.setTitle("[ICTK56]BailamICT03 : Elevator System View");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         panel = new SimulationPanel(this, getWidth(), getHeight());
         add(panel);

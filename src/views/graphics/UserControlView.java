@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextPane;
 import controllers.SimulatorSystem;
-import static controllers.SimulatorSystem.frame;
 import models.Passenger;
 
 /**
@@ -34,7 +33,7 @@ public class UserControlView extends JFrame {
     public UserControlView() {
         this.setLocationByPlatform(true);
         this.setSize(200, 150);
-        this.setTitle("User control");
+        this.setTitle("[ICTK56]BailamICT03 : User control");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         this.jpanel_principal = new JPanel();
@@ -80,7 +79,7 @@ public class UserControlView extends JFrame {
                 return;
             }
             
-            Passenger passenger = new Passenger(Integer.parseInt(ltpWanted.getText()), Integer.parseInt(ltpCurrent.getText()), mass);
+            Passenger passenger = new Passenger(Integer.parseInt(ltpWanted.getText())-1, Integer.parseInt(ltpCurrent.getText())-1, mass);
             passenger.pressFloorButton();
             
             SimulatorSystem ss = SimulatorSystem.getInstance();

@@ -18,7 +18,7 @@ public class Request {
     public int getStartFloor() {
         return startFloor;
     }
-
+    
     public void setStartFloor(int startFloor) {
         this.startFloor = startFloor;
     }
@@ -48,6 +48,30 @@ public class Request {
         this.startFloor = startFloor;
         this.direction = direction;
         this.endFloor = endFloor;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Request other = (Request) obj;
+        if (this.startFloor != other.startFloor) {
+            return false;
+        }
+        if (this.direction != other.direction) {
+            return false;
+        }
+        return true;
     }
     
 }

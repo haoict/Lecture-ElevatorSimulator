@@ -56,7 +56,7 @@ public class ConfigView extends JFrame {
 
         this.setLocationByPlatform(true);
         this.setSize(600, 400);
-        this.setTitle("Simulation of elevator behavior: Java Project 2008");
+        this.setTitle("[ICTK56]BailamICT03 : Elevator System");
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         Container content_pane = this.getContentPane();
 
@@ -88,7 +88,7 @@ public class ConfigView extends JFrame {
             // Part of the choice of the number of lift
             this.jpanel_elevator_count = new JPanel(new GridLayout(1, 2));
             {
-                JLabel choose_elevator_count = new JLabel("Number of lifts");
+                JLabel choose_elevator_count = new JLabel("Number of elevators");
                 choose_elevator_count.setFont(new Font(POLICE, Font.BOLD, 13));
                 jpanel_elevator_count.add(choose_elevator_count);
 
@@ -110,7 +110,7 @@ public class ConfigView extends JFrame {
             // Part of the choice of the number of lift
             this.jpanel_person_per_elevator_count = new JPanel(new GridLayout(1, 2));
             {
-                JLabel choose_person_per_elevator_count = new JLabel("People max lift");
+                JLabel choose_person_per_elevator_count = new JLabel("Max weight per elevator");
                 choose_person_per_elevator_count.setFont(new Font(POLICE, Font.BOLD, 13));
                 jpanel_person_per_elevator_count.add(choose_person_per_elevator_count);
 
@@ -131,7 +131,7 @@ public class ConfigView extends JFrame {
             // Part of the choice of the number of individual
             this.jpanel_person_count = new JPanel(new GridLayout(1, 2));
             {
-                JLabel choose_person_count = new JLabel("Number of people (total)");
+                JLabel choose_person_count = new JLabel("Number of random people (total)");
                 choose_person_count.setFont(new Font(POLICE, Font.BOLD, 13));
                 jpanel_person_count.add(choose_person_count);
 

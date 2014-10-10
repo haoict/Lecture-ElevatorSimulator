@@ -12,7 +12,6 @@ public class Launcher extends JFrame {
      * @param args
      * @throws MalformedURLException
      */
-    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public static void main(final String[] args) throws MalformedURLException {
         new ConfigView();
     }
